@@ -52,7 +52,7 @@ class Deposit(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     
     amount = Column(Float, nullable=False)
-    date = Column(Date, nullable=False)
+    deposit_date = Column(Date, nullable=False)
     notes = Column(Text)
     
     created_at = Column(DateTime, default=datetime.utcnow)

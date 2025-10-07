@@ -38,4 +38,11 @@ export const updateTrade = (id, tradeData) => api.put(`/trades/${id}`, tradeData
 
 export const deleteTrade = (id) => api.delete(`/trades/${id}`);
 
+// Deposits
+export const getDeposits = () => api.get('/deposits/');
+
+export const createDeposit = (depositData) => api.post('/deposits/', depositData);
+
+export const deleteDeposit = (id) => api.delete(`/deposits/${id}`);
+
 export default api;
