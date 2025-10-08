@@ -34,7 +34,7 @@ db.add(user)
 db.commit()
 db.refresh(user)
 
-# Add deposits (converted from AUD to USD approximately)
+# Add deposits (real USD amounts from Stake)
 deposits = [
     Deposit(user_id=user.id, amount=971.92, deposit_date=date(2025, 6, 13), notes="1500 AUD converted"),
     Deposit(user_id=user.id, amount=641.31, deposit_date=date(2025, 7, 17), notes="1000 AUD converted"),
@@ -46,79 +46,103 @@ deposits = [
 for deposit in deposits:
     db.add(deposit)
 
-# Add trades from your PDF (all with $6 brokerage fee)
+# Add trades from Stake transaction history
 trades_data = [
-    {"symbol": "SOFI", "entry_date": date(2025, 6, 19), "exit_date": date(2025, 6, 23), 
-     "entry_price": 14.89, "exit_price": 14.87, "shares": 34.853, "brokerage_fee": 6.0, "notes": ""},
+    # NVDA Trade 1
+    {"symbol": "NVDA", "entry_date": date(2025, 6, 18), "exit_date": date(2025, 6, 26), 
+     "entry_price": 145.40, "exit_price": 155.53, "shares": 3.07430111, "brokerage_fee": 6.0, "notes": ""},
     
-    {"symbol": "AEIS", "entry_date": date(2025, 6, 24), "exit_date": date(2025, 6, 24), 
-     "entry_price": 130.60, "exit_price": 129.73, "shares": 3.923, "brokerage_fee": 6.0, "notes": ""},
+    # SOFI Trade
+    {"symbol": "SOFI", "entry_date": date(2025, 6, 18), "exit_date": date(2025, 6, 23), 
+     "entry_price": 14.89, "exit_price": 14.87, "shares": 34.85304389, "brokerage_fee": 6.0, "notes": ""},
     
-    {"symbol": "NVDA", "entry_date": date(2025, 6, 19), "exit_date": date(2025, 6, 27), 
-     "entry_price": 145.40, "exit_price": 155.53, "shares": 3.074, "brokerage_fee": 6.0, "notes": ""},
+    # AEIS Trade
+    {"symbol": "AEIS", "entry_date": date(2025, 6, 23), "exit_date": date(2025, 6, 23), 
+     "entry_price": 130.60, "exit_price": 129.73, "shares": 3.92258052, "brokerage_fee": 6.0, "notes": ""},
     
-    {"symbol": "AMD", "entry_date": date(2025, 6, 24), "exit_date": date(2025, 7, 11), 
-     "entry_price": 132.98, "exit_price": 144.34, "shares": 3.781, "brokerage_fee": 6.0, "notes": ""},
+    # AMD Trade 1
+    {"symbol": "AMD", "entry_date": date(2025, 6, 23), "exit_date": date(2025, 7, 10), 
+     "entry_price": 132.98, "exit_price": 144.34, "shares": 3.78149807, "brokerage_fee": 6.0, "notes": ""},
     
-    {"symbol": "FTDR", "entry_date": date(2025, 7, 11), "exit_date": date(2025, 7, 21), 
-     "entry_price": 58.86, "exit_price": 56.74, "shares": 17.243, "brokerage_fee": 6.0, "notes": "tiny loss didnt wanna bleed"},
+    # FTDR Trade
+    {"symbol": "FTDR", "entry_date": date(2025, 7, 10), "exit_date": date(2025, 7, 21), 
+     "entry_price": 58.86, "exit_price": 56.74, "shares": 17.24384579, "brokerage_fee": 6.0, "notes": "tiny loss didnt wanna bleed"},
     
-    {"symbol": "OPEN", "entry_date": date(2025, 7, 19), "exit_date": date(2025, 7, 21), 
-     "entry_price": 2.10, "exit_price": 2.95, "shares": 304.073, "brokerage_fee": 6.0, "notes": "Fat profit"},
+    # OPEN Trade
+    {"symbol": "OPEN", "entry_date": date(2025, 7, 18), "exit_date": date(2025, 7, 21), 
+     "entry_price": 2.10, "exit_price": 2.95, "shares": 304.07298018, "brokerage_fee": 6.0, "notes": "Fat profit"},
     
+    # SMCI Trade
     {"symbol": "SMCI", "entry_date": date(2025, 7, 21), "exit_date": date(2025, 7, 25), 
-     "entry_price": 53.48, "exit_price": 53.76, "shares": 34.905, "brokerage_fee": 6.0, "notes": "meh"},
+     "entry_price": 53.48, "exit_price": 53.76, "shares": 34.90582973, "brokerage_fee": 6.0, "notes": "meh"},
     
-    {"symbol": "NVDA", "entry_date": date(2025, 7, 29), "exit_date": date(2025, 8, 1), 
-     "entry_price": 174.65, "exit_price": 177.99, "shares": 10.71, "brokerage_fee": 6.0, "notes": "Clean 1.5% scalp, smooth"},
+    # NVDA Trade 2
+    {"symbol": "NVDA", "entry_date": date(2025, 7, 28), "exit_date": date(2025, 7, 31), 
+     "entry_price": 174.65, "exit_price": 177.99, "shares": 10.71069884, "brokerage_fee": 6.0, "notes": "Clean 1.5% scalp, smooth"},
     
-    {"symbol": "AMD", "entry_date": date(2025, 8, 2), "exit_date": date(2025, 8, 5), 
-     "entry_price": 171.29, "exit_price": 175.86, "shares": 11.094, "brokerage_fee": 6.0, "notes": "Tight scalp, good read"},
+    # AMD Trade 2
+    {"symbol": "AMD", "entry_date": date(2025, 8, 1), "exit_date": date(2025, 8, 5), 
+     "entry_price": 171.29, "exit_price": 175.86, "shares": 11.09479028, "brokerage_fee": 6.0, "notes": "Tight scalp, good read"},
     
+    # CRWD Trade 1
     {"symbol": "CRWD", "entry_date": date(2025, 8, 6), "exit_date": date(2025, 8, 7), 
-     "entry_price": 444.45, "exit_price": 439.96, "shares": 4.376, "brokerage_fee": 6.0, "notes": ""},
+     "entry_price": 444.45, "exit_price": 439.96, "shares": 4.37639567, "brokerage_fee": 6.0, "notes": ""},
     
-    {"symbol": "TSM", "entry_date": date(2025, 8, 12), "exit_date": date(2025, 8, 14), 
-     "entry_price": 244.23, "exit_price": 236.92, "shares": 7.859, "brokerage_fee": 6.0, "notes": "fuck you"},
+    # TSM Trade
+    {"symbol": "TSM", "entry_date": date(2025, 8, 11), "exit_date": date(2025, 8, 14), 
+     "entry_price": 244.23, "exit_price": 236.92, "shares": 7.85905351, "brokerage_fee": 6.0, "notes": "fuck you"},
     
-    {"symbol": "AMZN", "entry_date": date(2025, 8, 19), "exit_date": date(2025, 8, 20), 
-     "entry_price": 229.34, "exit_price": 225.00, "shares": 10.898, "brokerage_fee": 6.0, "notes": "yay another L"},
+    # AMZN Trade 1
+    {"symbol": "AMZN", "entry_date": date(2025, 8, 18), "exit_date": date(2025, 8, 20), 
+     "entry_price": 229.34, "exit_price": 224.99, "shares": 10.89762932, "brokerage_fee": 6.0, "notes": "yay another L"},
     
-    {"symbol": "NVDA", "entry_date": date(2025, 8, 21), "exit_date": date(2025, 8, 22), 
-     "entry_price": 170.05, "exit_price": 171.57, "shares": 14.383, "brokerage_fee": 6.0, "notes": "set stop loss too tight"},
+    # NVDA Trade 3
+    {"symbol": "NVDA", "entry_date": date(2025, 8, 20), "exit_date": date(2025, 8, 22), 
+     "entry_price": 170.05, "exit_price": 171.57, "shares": 14.38309803, "brokerage_fee": 6.0, "notes": "set stop loss too tight"},
     
-    {"symbol": "AMD", "entry_date": date(2025, 8, 23), "exit_date": date(2025, 9, 6), 
-     "entry_price": 168.23, "exit_price": 150.72, "shares": 14.633, "brokerage_fee": 6.0, "notes": "awesome. should've just let myself get wicked out"},
+    # AMD Trade 3
+    {"symbol": "AMD", "entry_date": date(2025, 8, 22), "exit_date": date(2025, 9, 5), 
+     "entry_price": 168.23, "exit_price": 150.72, "shares": 14.63294299, "brokerage_fee": 6.0, "notes": "awesome. should've just let myself get wicked out"},
     
-    {"symbol": "VST", "entry_date": date(2025, 9, 6), "exit_date": date(2025, 9, 6), 
-     "entry_price": 178.77, "exit_price": 186.54, "shares": 12.303, "brokerage_fee": 6.0, "notes": "Clean scalp"},
+    # VST Trade
+    {"symbol": "VST", "entry_date": date(2025, 9, 5), "exit_date": date(2025, 9, 5), 
+     "entry_price": 178.77, "exit_price": 186.54, "shares": 12.30340148, "brokerage_fee": 6.0, "notes": "Clean scalp"},
     
-    {"symbol": "AMZN", "entry_date": date(2025, 9, 6), "exit_date": date(2025, 9, 9), 
-     "entry_price": 232.75, "exit_price": 236.53, "shares": 12.613, "brokerage_fee": 6.0, "notes": "Quick scalp"},
+    # AMZN Trade 2
+    {"symbol": "AMZN", "entry_date": date(2025, 9, 5), "exit_date": date(2025, 9, 8), 
+     "entry_price": 232.75, "exit_price": 236.53, "shares": 12.61347539, "brokerage_fee": 6.0, "notes": "Quick scalp"},
     
+    # MU Trade
     {"symbol": "MU", "entry_date": date(2025, 9, 9), "exit_date": date(2025, 9, 10), 
-     "entry_price": 133.48, "exit_price": 139.07, "shares": 22.305, "brokerage_fee": 6.0, "notes": "Tight scalp, smooth"},
+     "entry_price": 133.48, "exit_price": 139.07, "shares": 22.30596925, "brokerage_fee": 6.0, "notes": "Tight scalp, smooth"},
     
-    {"symbol": "CRWD", "entry_date": date(2025, 9, 11), "exit_date": date(2025, 9, 16), 
-     "entry_price": 429.89, "exit_price": 445.35, "shares": 7.202, "brokerage_fee": 6.0, "notes": "Split into 2 sells"},
+    # CRWD Trade 2 (split sells combined)
+    {"symbol": "CRWD", "entry_date": date(2025, 9, 10), "exit_date": date(2025, 9, 15), 
+     "entry_price": 429.89, "exit_price": 445.35, "shares": 7.20213841, "brokerage_fee": 6.0, "notes": "Split into 2 sells"},
     
-    {"symbol": "PLTR", "entry_date": date(2025, 9, 17), "exit_date": date(2025, 9, 18), 
-     "entry_price": 170.16, "exit_price": 163.91, "shares": 22.660, "brokerage_fee": 6.0, "notes": "Stop hit"},
+    # PLTR Trade
+    {"symbol": "PLTR", "entry_date": date(2025, 9, 16), "exit_date": date(2025, 9, 17), 
+     "entry_price": 170.16, "exit_price": 163.91, "shares": 22.65980004, "brokerage_fee": 6.0, "notes": "Stop hit"},
     
-    {"symbol": "TSLA", "entry_date": date(2025, 9, 17), "exit_date": date(2025, 9, 18), 
-     "entry_price": 419.10, "exit_price": 426.24, "shares": 8.848, "brokerage_fee": 6.0, "notes": "Clean scalp"},
+    # TSLA Trade 1
+    {"symbol": "TSLA", "entry_date": date(2025, 9, 17), "exit_date": date(2025, 9, 17), 
+     "entry_price": 419.10, "exit_price": 426.24, "shares": 8.84809252, "brokerage_fee": 6.0, "notes": "Clean scalp"},
     
-    {"symbol": "INTC", "entry_date": date(2025, 9, 18), "exit_date": date(2025, 9, 19), 
-     "entry_price": 31.29, "exit_price": 32.24, "shares": 120.343, "brokerage_fee": 6.0, "notes": "Decent scalp"},
+    # INTC Trade
+    {"symbol": "INTC", "entry_date": date(2025, 9, 18), "exit_date": date(2025, 9, 18), 
+     "entry_price": 31.29, "exit_price": 32.24, "shares": 120.34338165, "brokerage_fee": 6.0, "notes": "Decent scalp"},
     
+    # AMZN Trade 3
     {"symbol": "AMZN", "entry_date": date(2025, 9, 19), "exit_date": date(2025, 9, 22), 
-     "entry_price": 233.72, "exit_price": 229.78, "shares": 16.576, "brokerage_fee": 6.0, "notes": "Stop hit"},
+     "entry_price": 233.72, "exit_price": 229.78, "shares": 16.57551677, "brokerage_fee": 6.0, "notes": "Stop hit"},
     
-    {"symbol": "TSLA", "entry_date": date(2025, 9, 22), "exit_date": date(2025, 9, 24), 
-     "entry_price": 437.36, "exit_price": 434.09, "shares": 8.695, "brokerage_fee": 6.0, "notes": "Lossy scalp"},
+    # TSLA Trade 2
+    {"symbol": "TSLA", "entry_date": date(2025, 9, 22), "exit_date": date(2025, 9, 23), 
+     "entry_price": 437.36, "exit_price": 434.09, "shares": 8.69458848, "brokerage_fee": 6.0, "notes": "Lossy scalp"},
     
+    # AMD Trade 4
     {"symbol": "AMD", "entry_date": date(2025, 9, 23), "exit_date": date(2025, 9, 25), 
-     "entry_price": 161.98, "exit_price": 155.79, "shares": 23.264, "brokerage_fee": 6.0, "notes": "Stop hit"},
+     "entry_price": 161.98, "exit_price": 155.79, "shares": 23.26405523, "brokerage_fee": 6.0, "notes": "Stop hit"},
 ]
 
 for trade_data in trades_data:
@@ -130,5 +154,6 @@ db.commit()
 db.close()
 
 print("✅ Seed data added successfully!")
-print("📊 Added 5 deposits and 24 trades (all with $6 brokerage fees)")
+print("📊 Added 5 deposits and 25 trades (24 closed + 1 open)")
+print("💰 Total deposited: $3,560.39 USD")
 print("🔑 Login with: test@test.com / test123")
