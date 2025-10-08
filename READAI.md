@@ -1,4 +1,4 @@
-# Trade Tracker - Claude Context
+# Trade Tracker - Context
 
 ## What It Is
 Full-stack web app for tracking stock trades with automatic P&L calculations, deposit tracking, and performance analytics. Built as a modern alternative to Excel/Google Sheets for active traders.

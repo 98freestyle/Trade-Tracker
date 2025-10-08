@@ -52,8 +52,17 @@ def calculate_trade_metrics(trade: models.Trade):
     trade.total_cost = trade.entry_price * trade.shares
     
     if trade.exit_price:
-        trade.profit_loss = (trade.exit_price - trade.entry_price) * trade.shares
-        trade.profit_loss_percent = ((trade.exit_price - trade.entry_price) / trade.entry_price) * 100
+        # Calculate raw P&L from price movement
+        raw_pl = (trade.exit_price - trade.entry_price) * trade.shares
+        
+        # Subtract brokerage fees to get net P&L
+        trade.profit_loss = raw_pl - (trade.brokerage_fee or 0)
+        
+        # Calculate percentage return on capital deployed (including fees)
+        if trade.total_cost > 0:
+            trade.profit_loss_percent = (trade.profit_loss / trade.total_cost) * 100
+        else:
+            trade.profit_loss_percent = 0
     else:
         trade.profit_loss = None
         trade.profit_loss_percent = None
