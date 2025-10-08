@@ -1,119 +1,130 @@
-# Trade Tracker - AI Context
+# Trade Tracker - Claude Context
 
 ## What It Is
-Web application for tracking stock trades with real-time P&L calculations, deposit tracking, and performance analytics. Replaces Excel/Google Sheets with a clean, modern interface.
+Full-stack web app for tracking stock trades with automatic P&L calculations, deposit tracking, and performance analytics. Built as a modern alternative to Excel/Google Sheets for active traders.
 
 ## Tech Stack
 - **Backend:** FastAPI + SQLite + SQLAlchemy
 - **Frontend:** React + Vite + Tailwind CSS
-- **Auth:** JWT tokens with Argon2 password hashing
-- **Hosting:** Backend on VPS (port 8002), Frontend served via nginx
-
-## Database Models
-- **User:** id, email, hashed_password, created_at
-- **Trade:** id, user_id, symbol, entry_date, exit_date, entry_price, exit_price, shares, brokerage_fee, notes, profit_loss, profit_loss_percent, total_cost, created_at
-- **Deposit:** id, user_id, amount, deposit_date, notes, created_at
+- **Auth:** JWT with Argon2 password hashing
+- **Deployment:** Backend as systemd service (port 8002), frontend via nginx
 
 ## File Structure
 ```
-backend/
-├── main.py          # FastAPI app entry point
-├── models.py        # SQLAlchemy models (User, Trade, Deposit)
-├── database.py      # Database connection and session management
-├── auth.py          # Authentication helpers (JWT, password hashing)
-├── seed_data.py     # Script to populate test data
-├── routers/
-│   ├── auth.py      # /api/auth/* endpoints (register, login, user profile)
-│   ├── trades.py    # /api/trades/* endpoints (CRUD operations)
-│   └── deposits.py  # /api/deposits/* endpoints (CRUD operations)
-
-frontend/src/
-├── components/
-│   ├── TradeForm.jsx    # Modal for adding/editing trades
-│   └── DepositForm.jsx  # Modal for adding deposits
-├── pages/
-│   ├── Login.jsx
-│   ├── Register.jsx
-│   └── Dashboard.jsx    # Main page with stats, trades, and deposits
-├── services/
-│   └── api.js           # Axios API client with auth interceptors
-└── App.jsx              # React Router setup with protected routes
+.
+├── READAI.md
+├── README.md
+├── backend/
+│   ├── READAI.md
+│   ├── auth.py              # JWT & password hashing
+│   ├── database.py          # DB connection
+│   ├── main.py              # FastAPI app entry, CORS, router includes
+│   ├── models.py            # User, Trade, Deposit models
+│   ├── requirements.txt
+│   ├── routers/
+│   │   ├── __init__.py
+│   │   ├── auth.py          # Register, login, user endpoints
+│   │   ├── deposits.py      # Deposit CRUD
+│   │   └── trades.py        # Trade CRUD + auto P&L calculation
+│   ├── seed_data.py         # Test data script (24 trades, 5 deposits)
+│   └── tradetracker.db      # SQLite database
+└── frontend/
+    ├── index.html
+    ├── package-lock.json
+    ├── package.json
+    ├── postcss.config.js
+    ├── public/
+    ├── src/
+    │   ├── App.jsx              # React Router with protected routes
+    │   ├── components/
+    │   │   ├── DepositForm.jsx  # Modal for add deposits
+    │   │   ├── Navbar.jsx
+    │   │   ├── StatCard.jsx
+    │   │   ├── TradeForm.jsx    # Modal for add/edit trades
+    │   │   └── TradeTable.jsx
+    │   ├── index.css
+    │   ├── main.jsx
+    │   ├── pages/
+    │   │   ├── Dashboard.jsx    # Main page: stats, trades, deposits
+    │   │   ├── Login.jsx
+    │   │   └── Register.jsx
+    │   └── services/
+    │       └── api.js           # Axios with JWT interceptor
+    ├── tailwind.config.js
+    └── vite.config.js
 ```
 
-## Features Implemented
-
-### Authentication & Authorization
-✅ User registration with email validation
-✅ JWT-based login system
-✅ Protected routes requiring authentication
-✅ Secure password hashing with Argon2
-
-### Trade Management
-✅ Full CRUD operations (Create, Read, Update, Delete)
-✅ Automatic P&L calculation on trade entry
-✅ Support for open positions (trades without exit date/price)
-✅ Trade table with edit/delete actions
-✅ Modal-based trade form for adding/editing
-
-### Deposit Tracking
-✅ Record deposits with date and notes
-✅ USD-based deposit tracking
-✅ Deposit history table with delete functionality
-✅ Integration with account performance calculations
-
-### Dashboard Analytics
-✅ Total trades count
-✅ Total P&L (aggregate profit/loss from all closed trades)
-✅ Win rate percentage (winning trades / total closed trades)
-✅ Total deposits (sum of all deposits)
-✅ Account value (deposits + total P&L)
-✅ ROI calculation (P&L / deposits × 100)
-
-### UI/UX
-✅ Dark mode interface with gray/blue color scheme
-✅ Responsive grid layout for stats cards
+## What's Built
+✅ Auth system (register, login, JWT tokens)
+✅ Trade CRUD with auto P&L calculation
+✅ Deposit tracking (add, view, delete)
+✅ Dashboard with stats: Total P&L, Win Rate, ROI, Account Value
+✅ Edit/delete trades from UI
 ✅ Modal forms for data entry
-✅ Confirmation dialogs for destructive actions
-✅ Real-time stat updates after data changes
+✅ Dark theme UI
 
-## What's NOT Built Yet
-❌ CSV import functionality
-❌ Advanced analytics (best/worst trades, monthly performance breakdowns)
-❌ Performance charts and visualizations
-❌ Trade filtering and search
-❌ Export functionality
-❌ Mobile PWA setup
-❌ Email verification system
-❌ Password reset functionality
-❌ Multi-currency support
-❌ Brokerage fee tracking in P&L calculations
-
-## Important Notes
-- **brokerage_fee** field stores transaction fees (not broker name)
-- JWT tokens stored in localStorage
-- Backend runs as systemd service (`tradetracker`)
-- Nginx serves frontend from `/dist` folder
-- Database location: `/home/tradetracker/Trade-Tracker/backend/tradetracker.db`
-- All monetary values stored and displayed in USD
-
-## Development Workflow
-1. Backend changes: Edit files → `sudo systemctl restart tradetracker`
-2. Frontend changes: Edit files → `npm run build` → nginx serves updated build
-3. Database reset: Delete `.db` file → restart backend (recreates schema)
-4. Test data: Run `python seed_data.py` to populate dummy trades/deposits
-
-## Next Steps (Priority Order)
-1. Add performance charts (P&L over time, win rate visualization)
-2. Implement advanced analytics endpoints
-3. Design overhaul with animations and premium aesthetic
-4. Add trade filtering and search functionality
-5. Implement CSV import with column mapping
-6. Build mobile-responsive layouts
-7. Add export functionality (PDF reports, CSV downloads)
+## What's NOT Built
+❌ Brokerage fees NOT subtracted from P&L yet (needs fix)
+❌ Charts/visualizations (P&L over time, performance graphs)
+❌ Advanced analytics (best/worst trades, monthly breakdown)
+❌ CSV import/export
+❌ Trade filtering or search
+❌ Mobile optimization
+❌ Email verification
+❌ Password reset
+❌ Error boundaries/toast notifications
 
 ## Known Issues
-- Database migrations not implemented (schema changes require manual fixes or DB reset)
-- No rate limiting on API endpoints
-- CORS currently allows all origins (should be restricted in production)
-- No email verification (users can register with fake emails)
-- Password reset requires manual database intervention
+- **Brokerage fees ignored in P&L** - calculate_trade_metrics needs update
+- No database migrations (schema changes = manual fix or DB reset)
+- CORS allows all origins
+- No rate limiting
+- JWT secret is placeholder
+- No pagination (breaks with 1000+ trades)
+
+## Roadmap (Priority Order)
+
+### Phase 1: Critical Fixes
+1. Fix brokerage fee calculation in P&L
+2. Add basic charts (P&L over time, win rate graph)
+3. Export to PDF/CSV for tax purposes
+
+### Phase 2: Polish
+4. Advanced analytics (best trades, performance by ticker)
+5. Trade filtering and search
+6. Design overhaul (animations, better colors)
+7. Error handling + toast notifications
+
+### Phase 3: Advanced
+8. CSV import with column mapping
+9. Mobile responsive + PWA
+10. Security hardening (rate limits, migrations)
+
+## Dev Workflow
+
+**Restart backend:**
+```bash
+sudo systemctl restart tradetracker
+sudo journalctl -u tradetracker -n 50  # check logs
+```
+
+**Frontend build:**
+```bash
+cd frontend && npm run build
+# nginx auto-serves from dist/
+```
+
+**Reset database (nukes all data):**
+```bash
+rm backend/tradetracker.db
+sudo systemctl restart tradetracker
+python backend/seed_data.py  # optional: add test data
+```
+
+**Test credentials:** test@test.com / test123
+
+## Important Notes
+- Database: `/home/tradetracker/Trade-Tracker/backend/tradetracker.db`
+- All values in USD only
+- P&L formula: (exit - entry) × shares - brokerage_fee (NEEDS FIX)
+- Tokens stored in localStorage
