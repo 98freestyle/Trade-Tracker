@@ -143,6 +143,10 @@ trades_data = [
     # AMD Trade 4
     {"symbol": "AMD", "entry_date": date(2025, 9, 23), "exit_date": date(2025, 9, 25), 
      "entry_price": 161.98, "exit_price": 155.79, "shares": 23.26405523, "brokerage_fee": 6.0, "notes": "Stop hit"},
+    
+    # NVDA Trade 4 (closed)
+    {"symbol": "NVDA", "entry_date": date(2025, 9, 25), "exit_date": date(2025, 10, 9), 
+     "entry_price": 180.02, "exit_price": 193.68, "shares": 20.0996232, "brokerage_fee": 6.01, "notes": "Nice runner"},
 ]
 
 for trade_data in trades_data:
@@ -154,6 +158,6 @@ db.commit()
 db.close()
 
 print("✅ Seed data added successfully!")
-print("📊 Added 5 deposits and 25 trades (24 closed + 1 open)")
+print("📊 Added 5 deposits and 25 trades (all closed)")
 print("💰 Total deposited: $3,560.39 USD")
 print("🔑 Login with: test@test.com / test123")
